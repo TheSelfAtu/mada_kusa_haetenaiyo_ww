@@ -42,3 +42,6 @@ yarn.lock
 
 # ignore important info like token
 constants
+
+# ignore memo 
+memo.txt
