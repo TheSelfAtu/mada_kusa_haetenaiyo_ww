@@ -1,3 +1,5 @@
+import { postTextToSlack } from "../../infrastructure/slack/postText";
+
 // GraphQL レスポンスをハンドル
 export function handleApolloResult(data: any) {
   messageZeroContributionDay(data);
@@ -17,6 +19,6 @@ function messageZeroContributionDay(data: any) {
     ].contributionDays[dayCountThisWeek - 1];
   const contributionCountThisDay = contributionThisDay.contributionCount;
   if (contributionCountThisDay == 0) {
-    console.log("まだ草生えてないよww");
+    postTextToSlack("まだ草生えてないよww");
   }
 }
