@@ -1,32 +1,30 @@
-import { postTextToSlack } from "../../infrastructure/slack/postText";
+import { GithubResponse } from "../../@types/type";
+import { postTextToSlack } from "../../infrastructure/postTextToSlack";
 
 // GraphQL レスポンスをハンドル
-export function handleApolloResult(data: any) {
-  console.log(data);
-  
-  // const weekCountThisYear =
-  //   data.user.contributionsCollection.contributionCalendar.weeks.length;
-  // const dayCountThisWeek =
-  //   data.user.contributionsCollection.contributionCalendar.weeks[
-  //     weekCountThisYear - 1
-  //   ].contributionDays.length;
-
-  // const contributionThisDay =
-  //   data.user.contributionsCollection.contributionCalendar.weeks[
-  //     weekCountThisYear - 1
-  //   ].contributionDays[dayCountThisWeek - 1];
-  // const contributionCountThisDay = contributionThisDay.contributionCount;
-  // messageZeroContributionDay(contributionCountThisDay);
-  // messageCountContributionsDay(contributionCountThisDay);
+export function handleApolloResult(githubResponse: GithubResponse) {
+  const contributionsCountToday = getContributionsCountToday(githubResponse);
+  messageZeroContributionDay(contributionsCountToday);
+  messageContributionsCountDay(contributionsCountToday);
 }
 
-function messageZeroContributionDay(countContributions: any) {
-  if (countContributions == 0) {
+function messageZeroContributionDay(contributionsCountToday: any) {
+  if (contributionsCountToday == 0) {
     postTextToSlack("まだ草生えてないよww");
   }
 }
 
-function messageCountContributionsDay(countContributions: any) {
-  const kusas = "w".repeat(countContributions);
-  postTextToSlack(`今日の草は${countContributions}${kusas}`);
+function messageContributionsCountDay(contributionsCountToday: any) {
+  const kusas = "w".repeat(contributionsCountToday);
+  postTextToSlack(`今日の草は${contributionsCountToday}${kusas}`);
+}
+
+function getContributionsCountToday(githubResponse: GithubResponse) {
+  const contributionCalendar =
+    githubResponse.user.contributionsCollection.contributionCalendar;
+  const weeks = contributionCalendar.weeks;
+  const date = new Date();
+  const contributionsToday =
+    weeks[weeks.length - 1].contributionDays[date.getDay()];
+  return contributionsToday.contributionCount;
 }

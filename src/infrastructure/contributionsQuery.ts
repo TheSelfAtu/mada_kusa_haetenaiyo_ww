@@ -12,6 +12,7 @@ export const githubContributionsQuery = gql`
             contributionDays {
               contributionCount
               date
+              weekday
             }
           }
         }

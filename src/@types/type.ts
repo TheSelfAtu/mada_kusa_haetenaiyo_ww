@@ -1,9 +1,29 @@
-const githubResponse = {
-    user: {
-      __typename: 'User',
-      contributionsCollection: {
-        __typename: 'ContributionsCollection',
-        contributionCalendar: [Object]
-      }
-    }
-  }
+export interface GithubResponse {
+  user: {
+    __typename: "User";
+    contributionsCollection: ContributionsCollection;
+  };
+}
+
+interface ContributionsCollection {
+  __typename: "ContributionsCollection";
+  contributionCalendar: ContributionCalendar;
+}
+
+interface ContributionCalendar {
+  __typename: "ContributionCalendar";
+  totalContributions: number;
+  weeks: ContributionCalendarWeek[];
+}
+
+interface ContributionCalendarWeek {
+  __typename: "ContributionCalendarWeek";
+  contributionDays: ContributionCalendarDay[];
+}
+
+interface ContributionCalendarDay {
+  __typename: "ContributionCalendarDay";
+  contributionCount: number;
+  date: string;
+  weekday: number;
+}
