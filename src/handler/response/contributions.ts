@@ -1,25 +1,27 @@
 import { GithubResponse } from "../../@types/type";
 import { postTextToSlack } from "../../infrastructure/postTextToSlack";
+import { fetchContributions } from "../../infrastructure/githubApi";
 
 // GraphQL レスポンスをハンドル
 export function handleApolloResult(githubResponse: GithubResponse) {
-  const contributionsCountToday = getContributionsCountToday(githubResponse);
-  messageZeroContributionDay(contributionsCountToday);
-  messageContributionsCountDay(contributionsCountToday);
+  const contributionsCountToday = getContributionsCount();
+  messageZeroContributionToday(contributionsCountToday);
+  messageContributionsCountToday(contributionsCountToday);
 }
 
-function messageZeroContributionDay(contributionsCountToday: any) {
+export function messageZeroContributionToday(contributionsCountToday: any) {
   if (contributionsCountToday == 0) {
     postTextToSlack("まだ草生えてないよww");
   }
 }
 
-function messageContributionsCountDay(contributionsCountToday: any) {
+function messageContributionsCountToday(contributionsCountToday: any) {
   const kusas = "w".repeat(contributionsCountToday);
   postTextToSlack(`今日の草は${contributionsCountToday}${kusas}`);
 }
 
-function getContributionsCountToday(githubResponse: GithubResponse) {
+export async function getContributionsCount() {
+  const githubResponse = await fetchContributions();
   const contributionCalendar =
     githubResponse.user.contributionsCollection.contributionCalendar;
   const weeks = contributionCalendar.weeks;
