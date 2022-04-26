@@ -27,3 +27,10 @@ interface ContributionCalendarDay {
   date: string;
   weekday: number;
 }
+
+export interface ContributionsCount {
+  contributionsToday: number;
+  contributionsYesterday: number;
+  contributionsThisWeek: number;
+  contributionsLastWeek: number;
+}

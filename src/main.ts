@@ -9,11 +9,11 @@ import {
 function main() {
   cron.schedule("0 0 21 * * *", async () => {
     const contributionCount = await getContributionsCount();
-    messageZeroContributionToday(contributionCount);
+    messageZeroContributionToday(contributionCount.contributionsToday);
   });
-  cron.schedule("0 52 21 * * *", async () => {
+  cron.schedule("0 15 23 * * *", async () => {
     const contributionCount = await getContributionsCount();
-    messageContributionsCountToday(contributionCount);
+    messageContributionsCountToday(contributionCount.contributionsToday);
   });
 }
 
