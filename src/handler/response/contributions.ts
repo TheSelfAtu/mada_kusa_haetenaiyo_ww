@@ -15,7 +15,7 @@ export function messageZeroContributionToday(contributionsCountToday: any) {
   }
 }
 
-function messageContributionsCountToday(contributionsCountToday: any) {
+export function messageContributionsCountToday(contributionsCountToday: any) {
   const kusas = "w".repeat(contributionsCountToday);
   postTextToSlack(`今日の草は${contributionsCountToday}${kusas}`);
 }
