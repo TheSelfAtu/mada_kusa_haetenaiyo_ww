@@ -4,32 +4,29 @@ import { fetchContributions } from "../../infrastructure/githubApi";
 
 // GraphQL レスポンスをハンドル
 
-export function messageZeroContributionToday(contributionsCountToday: number) {
-  if (contributionsCountToday == 0) {
+export async function messageZeroContributionToday() {
+  const githubResponse = await fetchContributions();
+  const contributionCountToday = getContributionCountToday(githubResponse);
+
+  if (contributionCountToday == 0) {
     postTextToSlack("まだ草生えてないよww");
   }
 }
 
-export function messageContributionsCountToday(
-  contributionsCountToday: number
-) {
-  const kusas = "w".repeat(contributionsCountToday);
-  postTextToSlack(`今日の草は${contributionsCountToday}${kusas}`);
+export async function messageContributionCountToday() {
+  const githubResponse = await fetchContributions();
+  const contributionCountToday = getContributionCountToday(githubResponse);
+  const kusas = "w".repeat(contributionCountToday);
+  postTextToSlack(`今日の草は${contributionCountToday}${kusas}`);
 }
 
-export async function getContributionsCount() {
+export async function messageContributionCountYesterday() {
   const githubResponse = await fetchContributions();
-  const contributionsToday = getContributionCountToday(githubResponse);
-  const contributionsYesterday = getContributionCountYesterday(githubResponse);
-  const contributionsThisWeek = getContributionCountThisWeek(githubResponse);
-  const contributionsLastWeek = getContributionCountLastWeek(githubResponse);
+  const contributionCountYesterday =
+    getContributionCountYesterday(githubResponse);
 
-  return {
-    contributionsToday: contributionsToday,
-    contributionsYesterday: contributionsYesterday,
-    contributionsThisWeek: contributionsThisWeek,
-    contributionsLastWeek: contributionsLastWeek,
-  };
+  const kusas = "w".repeat(contributionCountYesterday);
+  postTextToSlack(`昨日の草は${contributionCountYesterday}${kusas}`);
 }
 
 export function getContributionCountToday(githubResponse: GithubResponse) {
@@ -46,10 +43,18 @@ export function getContributionCountYesterday(githubResponse: GithubResponse) {
   const contributionCalendar =
     githubResponse.user.contributionsCollection.contributionCalendar;
   const weeks = contributionCalendar.weeks;
-  const contributionsYesterday =
+
+  // 日曜日の場合、先週の土曜日のコントリビューションを取得する
+  if (new Date().getDay() == 0) {
+    const contributionYesterday = weeks[weeks.length - 2].contributionDays[6];
+
+    return contributionYesterday.contributionCount;
+  }
+
+  const contributionYesterday =
     weeks[weeks.length - 1].contributionDays[new Date().getDay() - 1];
 
-  return contributionsYesterday.contributionCount;
+  return contributionYesterday.contributionCount;
 }
 
 export function getContributionCountThisWeek(githubResponse: GithubResponse) {

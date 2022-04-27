@@ -2,18 +2,21 @@ import cron from "node-cron";
 import "cross-fetch/polyfill"; // グローバルな fetch 関数を定義する
 import {
   messageZeroContributionToday,
-  messageContributionsCountToday,
-  getContributionsCount,
+  messageContributionCountToday,
+  getContributionCountToday,
+  getContributionCountYesterday,
+  messageContributionCountYesterday,
 } from "./handler/response/contributions";
+import { fetchContributions } from "./infrastructure/githubApi";
 
 function main() {
   cron.schedule("0 0 21 * * *", async () => {
-    const contributionCount = await getContributionsCount();
-    messageZeroContributionToday(contributionCount.contributionsToday);
+    messageZeroContributionToday();
   });
-  cron.schedule("0 15 23 * * *", async () => {
-    const contributionCount = await getContributionsCount();
-    messageContributionsCountToday(contributionCount.contributionsToday);
+
+  // cron.schedule("0 30 7 * * *", async () => {
+  cron.schedule("0 25 23 * * *", () => {
+    messageContributionCountYesterday();
   });
 }
 
