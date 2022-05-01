@@ -8,15 +8,20 @@ export async function messageZeroContributionToday() {
   const githubResponse = await fetchContributions();
   const contributionCountToday = getContributionCountToday(githubResponse);
 
-  if (contributionCountToday == 0) {
+  if (isZeroContribution(contributionCountToday)) {
     postTextToSlack("まだ草生えてないよww");
   }
+}
+
+export function isZeroContribution(contributionCount: number) {
+  return contributionCount == 0;
 }
 
 export async function messageContributionCountToday() {
   const githubResponse = await fetchContributions();
   const contributionCountToday = getContributionCountToday(githubResponse);
   const kusas = "w".repeat(contributionCountToday);
+
   postTextToSlack(`今日の草は${contributionCountToday}${kusas}`);
 }
 
@@ -24,9 +29,18 @@ export async function messageContributionCountYesterday() {
   const githubResponse = await fetchContributions();
   const contributionCountYesterday =
     getContributionCountYesterday(githubResponse);
-
   const kusas = "w".repeat(contributionCountYesterday);
+
   postTextToSlack(`昨日の草は${contributionCountYesterday}${kusas}`);
+}
+
+export async function messageContributionCountThisWeek() {
+  const githubResponse = await fetchContributions();
+  const contributionCountYesterday =
+    getContributionCountThisWeek(githubResponse);
+  const kusas = "w".repeat(contributionCountYesterday);
+
+  postTextToSlack(`今週の草は${contributionCountYesterday}${kusas}`);
 }
 
 export function getContributionCountToday(githubResponse: GithubResponse) {
@@ -61,11 +75,11 @@ export function getContributionCountThisWeek(githubResponse: GithubResponse) {
   const contributionCalendar =
     githubResponse.user.contributionsCollection.contributionCalendar;
   const weeks = contributionCalendar.weeks;
-  const contributionCountThisWeek = weeks[
-    weeks.length - 1
-  ].contributionDays.reduce((sum, contributionsDay) => {
-    return sum + contributionsDay.contributionCount;
-  }, 0);
+  const contributionThisWeek = weeks[weeks.length - 1];
+  const contributionCountThisWeek =
+    contributionThisWeek.contributionDays.reduce((sum, contributionsDay) => {
+      return sum + contributionsDay.contributionCount;
+    }, 0);
 
   return contributionCountThisWeek;
 }
@@ -74,11 +88,11 @@ export function getContributionCountLastWeek(githubResponse: GithubResponse) {
   const contributionCalendar =
     githubResponse.user.contributionsCollection.contributionCalendar;
   const weeks = contributionCalendar.weeks;
-  const contributionCountLastWeek = weeks[
-    weeks.length - 1
-  ].contributionDays.reduce((sum, contributionsDay) => {
-    return sum + contributionsDay.contributionCount;
-  }, 0);
+  const contributionLastWeek = weeks[weeks.length - 2];
+  const contributionCountLastWeek =
+    contributionLastWeek.contributionDays.reduce((sum, contributionsDay) => {
+      return sum + contributionsDay.contributionCount;
+    }, 0);
 
   return contributionCountLastWeek;
 }

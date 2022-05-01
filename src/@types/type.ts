@@ -5,7 +5,7 @@ export interface GithubResponse {
   };
 }
 
-interface ContributionsCollection {
+export interface ContributionsCollection {
   __typename: "ContributionsCollection";
   contributionCalendar: ContributionCalendar;
 }
