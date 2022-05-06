@@ -25,6 +25,22 @@ export class Slack {
     this.postMessage(this.message.contributionCountToday(contributionCount));
   }
 
+  postYesterdayActivity() {
+    if (this.contribution.isZeroContributionToday()) {
+      return;
+    }
+
+    const contributionCount = this.contribution.countYesterday();
+    this.postMessage(
+      this.message.contributionCountYesterday(contributionCount)
+    );
+  }
+
+  postThisWeekActivity() {
+    const contributionCount = this.contribution.countThisWeek();
+    this.postMessage(this.message.contributionCountThisWeek(contributionCount));
+  }
+
   postMessage(message: Message) {
     chat
       .postMessage({

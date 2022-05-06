@@ -52,7 +52,3 @@ const fetchGithubResponse = (
 export const fetchContributions = (): Promise<GithubResponse> => {
   return fetchGithubResponse(githubContributionsQuery);
 };
-
-// export const fetchContributions = (): Promise<GithubResponse> => {
-//   return fetchGithubResponse(githubContributionsQuery);
-// };

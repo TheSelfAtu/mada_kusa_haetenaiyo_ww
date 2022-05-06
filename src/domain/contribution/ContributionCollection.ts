@@ -26,6 +26,11 @@ export class Contribution {
 
       return contributionYesterday.contributionCount;
     }
+
+    const contributionYesterday =
+      weeks[weeks.length - 1].contributionDays[new Date().getDay() - 1];
+
+    return contributionYesterday.contributionCount;
   }
 
   countThisWeek() {
