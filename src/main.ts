@@ -18,7 +18,6 @@ function main() {
   });
 
   cron.schedule("0 30 7 * * *", async () => {
-    // cron.schedule("0 7 18 * * *", async () => {
     const githubResponse = await fetchContributions();
     const contribution = new Contribution(
       githubResponse.user.contributionsCollection
